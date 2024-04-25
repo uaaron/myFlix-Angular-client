@@ -76,6 +76,7 @@ export class UserRegistrationService {
 
   //Get Genre
   getGenre(genreName: string): Observable<any> {
+    const token = localStorage.getItem('token');
     return this.http.get(apiUrl + 'movies/genre/' + genreName, {
       headers: new HttpHeaders(
         {
@@ -104,7 +105,7 @@ export class UserRegistrationService {
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-    user.FavoriteMovies.push(movieId);
+    user.FavoriteMovies.push(movieID);
     localStorage.setItem('user', JSON.stringify(user));
 
 
@@ -154,13 +155,13 @@ export class UserRegistrationService {
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-    const index = user.FavoriteMovies.indexOf(movieId);
+    const index = user.FavoriteMovies.indexOf(movieID);
     if (index >= 0) {
       user.FavoriteMovies.splice(index, 1);
     }
     localStorage.setItem('user', JSON.stringify(user));
 
-    return this.http.delete(apiUrl + `users/${user.Username}/${movieId}`, {
+    return this.http.delete(apiUrl + `users/${user.Username}/${movieID}`, {
       headers: new HttpHeaders({
         Authorization: 'Bearer ' + token,
       })
@@ -170,8 +171,11 @@ export class UserRegistrationService {
     );
   }
 
-
-
+  // Non-typed response extraction
+  private extractResponseData(res: Response): any {
+    const body = res;
+    return body || {};
+  }
 
   private handleError(error: HttpErrorResponse): any {
     if (error.error instanceof ErrorEvent) {
