@@ -17,7 +17,9 @@ export class UserLoginFormComponent implements OnInit {
   constructor(
     public fetchApiData: UserRegistrationService,
     public dialogRef: MatDialogRef<UserLoginFormComponent>,
-    public snackBar: MatSnackBar) { }
+    public snackBar: MatSnackBar,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
   }
@@ -34,6 +36,8 @@ export class UserLoginFormComponent implements OnInit {
 
       localStorage.setItem('user', JSON.stringify(result.user));
       localStorage.setItem('token', result.token);
+
+      this.router.navigate(['movies'])
     }, (result) => {
       console.log(result)
       this.snackBar.open(result, 'OK', {
