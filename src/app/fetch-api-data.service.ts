@@ -9,7 +9,7 @@ const apiUrl = 'https://myflix22-92d05c2f180f.herokuapp.com/';
 @Injectable({
   providedIn: 'root'
 })
-export class UserRegistrationService {
+export class FetchApiService {
   // Inject the HttpClient module to the constructor params
   // This will provide HttpClient to the entire class, making it available via this.http
   constructor(private http: HttpClient) {
@@ -97,11 +97,18 @@ export class UserRegistrationService {
 
   //Get Favorite Movies
   //The Api doesn't have an endpoint to retrieve favorite movies
+  isFavoriteMovie(movieId: string): boolean {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    if (user) {
+      return user.FavoriteMovies.includes(movieId);
+    }
 
+    return false;
+  }
 
 
   //add favorite movie
-  addFavoriteMovie(username: string, movieID: number): Observable<any> {
+  addFavoriteMovie(movieID: string): Observable<any> {
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user') || '{}');
 
@@ -109,7 +116,7 @@ export class UserRegistrationService {
     localStorage.setItem('user', JSON.stringify(user));
 
 
-    return this.http.post(apiUrl + 'users/' + username + '/movies/' + movieID, {
+    return this.http.post(apiUrl + 'users/' + `${user.UserName}` + '/movies/' + movieID, {
       headers: new HttpHeaders(
         {
           Authorization: 'Bearer ' + token,
@@ -121,7 +128,7 @@ export class UserRegistrationService {
   }
 
   //Edit User
-  editUser(updatedUser: string): Observable<any> {
+  editUser(updatedUser: any): Observable<any> {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const token = localStorage.getItem('token');
     return this.http.put(apiUrl + 'users/' + updatedUser, {
@@ -151,7 +158,7 @@ export class UserRegistrationService {
   }
 
   //Delete Favorie movie
-  deleteFavoriteMovie(username: string, movieID: number): Observable<any> {
+  deleteFavoriteMovie(movieID: string): Observable<any> {
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user') || '{}');
 
@@ -161,7 +168,7 @@ export class UserRegistrationService {
     }
     localStorage.setItem('user', JSON.stringify(user));
 
-    return this.http.delete(apiUrl + `users/${user.Username}/${movieID}`, {
+    return this.http.delete(apiUrl + `users/${user.UserName}/${movieID}`, {
       headers: new HttpHeaders({
         Authorization: 'Bearer ' + token,
       })

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UserRegistrationService } from '../fetch-api-data.service';
+import { FetchApiService } from '../fetch-api-data.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router'
@@ -15,7 +15,7 @@ export class MovieCardComponent implements OnInit {
   movies: any[] = [];
 
   constructor(
-    public fetchMovies: UserRegistrationService,
+    public fetchMovies: FetchApiService,
     public dialog: MatDialog,
     public snackbar: MatSnackBar,
     public router: Router
@@ -60,5 +60,24 @@ export class MovieCardComponent implements OnInit {
     })
   }
 
+  isFavorite(id: string): boolean {
+    return this.fetchMovies.isFavoriteMovie(id)
+  }
+
+  removeFavorite(id: string): void {
+    this.fetchMovies.deleteFavoriteMovie(id).subscribe(() => {
+      this.snackbar.open('removed from favorites', 'OK', {
+        duration: 2000
+      })
+    });
+  }
+
+  addFavorite(id: string): void {
+    this.fetchMovies.addFavoriteMovie(id).subscribe(() => {
+      this.snackbar.open('added to favorites', 'OK', {
+        duration: 2000
+      })
+    });
+  }
 
 }
