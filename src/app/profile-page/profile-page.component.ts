@@ -13,6 +13,10 @@ type User = { _id?: string, UserName?: string, Password?: string, Email?: string
 export class ProfilePageComponent implements OnInit {
   user: User = {};
 
+  /**
+   * bind form input values to userData
+   */
+
   @Input() userData = { UserName: '', Password: '', Email: '' };
 
   constructor(
@@ -38,10 +42,17 @@ export class ProfilePageComponent implements OnInit {
 
   }
 
+  /**
+   * 
+   * @returns returns user data from localStorage
+   */
   getUser(): User {
     return JSON.parse(localStorage.getItem('user') || '{}')
   }
 
+  /**
+   * updates user data 
+   */
   updateUser(): void {
     this.fetchApiData.editUser(this.userData).subscribe((result) => {
       localStorage.setItem('user', JSON.stringify(result))
